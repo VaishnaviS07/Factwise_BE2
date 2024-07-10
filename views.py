@@ -1,20 +1,52 @@
 # app/views.py
-from rest_framework import viewsets
-from app.models import User, Team, ProjectBoard, Task
-from app.serializers import UserSerializer, TeamSerializer, ProjectBoardSerializer, TaskSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import json
+from app.concrete_classes.team import TeamConcrete
+from app.concrete_classes.user import UserConcrete
+from app.concrete_classes.project_board import ProjectBoardConcrete
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class TeamView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            team = TeamConcrete()
+            result = team.create_team(request.body.decode('utf-8'))
+            return Response(json.loads(result), status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class TeamViewSet(viewsets.ModelViewSet):
-    queryset = Team.objects.all()
-    serializer_class = TeamSerializer
+    def get(self, request, *args, **kwargs):
+        team = TeamConcrete()
+        result = team.list_teams()
+        return Response(json.loads(result), status=status.HTTP_200_OK)
 
-class ProjectBoardViewSet(viewsets.ModelViewSet):
-    queryset = ProjectBoard.objects.all()
-    serializer_class = ProjectBoardSerializer
 
-class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
+class UserView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            user = UserConcrete()
+            result = user.create_user(request.body.decode('utf-8'))
+            return Response(json.loads(result), status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, *args, **kwargs):
+        user = UserConcrete()
+        result = user.list_users()
+        return Response(json.loads(result), status=status.HTTP_200_OK)
+
+
+class ProjectBoardView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            board = ProjectBoardConcrete()
+            result = board.create_board(request.body.decode('utf-8'))
+            return Response(json.loads(result), status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, *args, **kwargs):
+        board = ProjectBoardConcrete()
+        result = board.list_boards(request.body.decode('utf-8'))
+        return Response(json.loads(result), status=status.HTTP_200_OK)
