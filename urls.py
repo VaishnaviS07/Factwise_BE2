@@ -1,14 +1,10 @@
 # app/urls.py
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
-from app.views import UserViewSet, TeamViewSet, ProjectBoardViewSet, TaskViewSet
-
-router = DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'teams', TeamViewSet)
-router.register(r'boards', ProjectBoardViewSet)
-router.register(r'tasks', TaskViewSet)
+from django.urls import path
+from app.views import TeamView, UserView, ProjectBoardView
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/teams/', TeamView.as_view(), name='teams'),
+    path('api/users/', UserView.as_view(), name='users'),
+    path('api/project-boards/', ProjectBoardView.as_view(), name='project_boards'),
 ]
+
